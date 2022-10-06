@@ -5,6 +5,7 @@ const server = http.createServer((req, res) => {
   const { method, url } = req;
   const path = url.split('?')[0];
   const query = querystring.parse(url.split('?')[1]);
+  res.setHeader('Content-type', 'application/json');
   if (method === 'POST') {
     let postData = "";
     req.on('data', (chunk) => {
