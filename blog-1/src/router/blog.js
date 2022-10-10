@@ -4,6 +4,7 @@ const {
   getDetail,
   newBlog,
   updateBlog,
+  delBolg,
 } = require('../controller/blog');
 
 const handleBlogRouter = (req, res) => {
@@ -36,9 +37,11 @@ const handleBlogRouter = (req, res) => {
   }
   // 删除博客
   if(method === 'POST' && req.path === '/api/blog/del') {
-    return {
-      msg: '这是删除博客的接口'
+    const success = delBolg(id);
+    if (success) {
+      return new SuccessModel('博客删除成功');
     }
+    return new ErrorModel('博客删除失败');
   }
 };
 

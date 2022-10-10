@@ -3,6 +3,12 @@ const handleUserRouter = require('./src/router/user');
 const handleBlogRouter = require('./src/router/blog');
 const { join } = require('path');
 
+/**
+ * 获取 post data 数据
+ * @param {*} req 请求对象
+ * @param {*} res 相应对象
+ * @returns 
+ */
 const getPostData = (req, res) => {
   const promise = new Promise((resolve, reject) => {
     if (req.method !== 'POST') {
@@ -20,7 +26,7 @@ const getPostData = (req, res) => {
         resolve({});
         return;
       }
-      resolve(JSON.stringify(postData));
+      resolve(JSON.parse(postData));
     });
   });
   return promise;

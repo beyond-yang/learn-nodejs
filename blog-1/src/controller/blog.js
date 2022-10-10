@@ -59,9 +59,19 @@ const updateBlog = (id, blogData = {}) => {
   return false;
 };
 
+/**
+ * 删除博客
+ * @param id
+ */
+const delBolg = (id) => {
+  // 假数据，返回 true 表示删除成功
+  return true;
+};
+
 module.exports = {
   getList,
   getDetail,
   newBlog,
   updateBlog,
+  delBolg,
 };
