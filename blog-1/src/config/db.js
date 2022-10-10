@@ -1,4 +1,4 @@
-const env = process.env.ENV_NODE;
+const env = process.env.NODE_ENV;
 
 let SQL_CONFIG;
 
@@ -20,6 +20,4 @@ if (env === 'dev') {
   };
 }
 
-module.exports = {
-  SQL_CONFIG
-};
+module.exports = SQL_CONFIG;

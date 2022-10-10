@@ -1,3 +1,4 @@
+const { exec } = require('../db/mysql');
 /**
  * 获取博客列表
  * @param {*} author 作者
@@ -5,22 +6,15 @@
  * @returns 博客列表数据
  */
 const getList = (author, keyword) => {
-  return [
-    {
-      id: 1,
-      title: 'nodejs 教程',
-      content: '前端必选课程 nodejs',
-      createTime: 12203735,
-      author: '双越',
-    },
-    {
-      id: 2,
-      title: 'JavaScript 教程',
-      content: '前端必选课程 JavaScript',
-      createTime: 868893735,
-      author: '杨静',
-    }
-  ];
+  let sql = 'select * from blogs where 1=1 ';
+  if (author) {
+    sql += `and username = ${author} `;
+  }
+  if (keyword) {
+    sql + `and title like %${keyword}% `;
+  }
+  sql += `order by createtime desc`;
+  return exec(sql);
 };
 
 /**
