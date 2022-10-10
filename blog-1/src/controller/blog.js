@@ -53,18 +53,33 @@ const newBlog = (blogData = {}) => {
  * @param {*} blogData 博客数据
  */
 const updateBlog = (id, blogData = {}) => {
+  const { title, content } = blogData;
   // blogData 是要更新的博客对象
-  console.log('updateBlog', id, blogData);
-  return false;
+  const sql = `update blogs set title = '${title}', content = '${content}' where id = ${id}`;
+  return exec(sql).then((updateData) => {
+    const { changedRows } = updateData;
+    if (changedRows) {
+      return true;
+    }
+    return false;
+  });
 };
 
 /**
  * 删除博客
  * @param id
+ * @param author
  */
-const delBolg = (id) => {
-  // 假数据，返回 true 表示删除成功
-  return true;
+const delBolg = (id, author) => {
+  const sql = `delete from blogs where id = ${id} and author = '${author}';`;
+  console.log(sql);
+  return exec(sql).then((rowsData) => {
+    const { affectedRows } = rowsData;
+    if (affectedRows) {
+      return true;
+    }
+    return false;
+  });
 };
 
 module.exports = {

@@ -39,21 +39,25 @@ const handleBlogRouter = (req, res) => {
   }
   // 更新博客
   if (method === 'POST' && req.path === '/api/blog/update') {
-    const success = updateBlog(id, req.body);
-    if (success) {
-      return new SuccessModel('博客更新成功');
-    } else {
-      return new ErrorModel('博客更新失败');
-    }
-      
+    const result = updateBlog(id, req.body);
+    return result.then((resultData) => {
+      if (resultData) {
+        return new SuccessModel('博客更新成功');
+      } else {
+        return new ErrorModel('博客更新失败');
+      }
+    });  
   }
   // 删除博客
   if(method === 'POST' && req.path === '/api/blog/del') {
-    const success = delBolg(id);
-    if (success) {
-      return new SuccessModel('博客删除成功');
-    }
-    return new ErrorModel('博客删除失败');
+    const author = 'yangjing';
+    const result = delBolg(id, author);
+    return result.then((resultData) => {
+      if (resultData) {
+        return new SuccessModel('博客删除成功');
+      }
+      return new ErrorModel('博客删除失败');
+    });
   }
 };
 
