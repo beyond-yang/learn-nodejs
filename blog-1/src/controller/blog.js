@@ -36,7 +36,32 @@ const getDetail = (id) => {
   }
 };
 
+/**
+ * 新建博客
+ * @param blogData 博客数据
+ */
+const newBlog = (blogData = {}) => {
+  // blogData 博客对象
+  console.log('newBlog', blogData);
+  return {
+    id: 3,
+  };
+};
+
+/**
+ * 更新博客
+ * @param {*} id 博客id
+ * @param {*} blogData 博客数据
+ */
+const updateBlog = (id, blogData = {}) => {
+  // blogData 是要更新的博客对象
+  console.log('updateBlog', id, blogData);
+  return false;
+};
+
 module.exports = {
   getList,
   getDetail,
+  newBlog,
+  updateBlog,
 };
