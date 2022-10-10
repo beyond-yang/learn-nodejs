@@ -23,11 +23,19 @@ const handleBlogRouter = (req, res) => {
   }
   // 获取博客详情
   if(method === 'GET' && req.path === '/api/blog/detail') {
-    return new SuccessModel(getDetail(id), '博客详情获取成功');
+    const result = getDetail(id);
+    return result.then((blogDetail) => {
+      return new SuccessModel(blogDetail, '博客详情获取成功');
+    });
   }
   // 新建博客
   if(method === 'POST' && req.path === '/api/blog/new') {
-    return new SuccessModel(newBlog(req.body));
+    const author = 'yangjing';
+    req.body.author = author;
+    const result = newBlog(req.body);
+    return result.then((resultObj) => {
+      return new SuccessModel(resultObj);
+    });
   }
   // 更新博客
   if (method === 'POST' && req.path === '/api/blog/update') {

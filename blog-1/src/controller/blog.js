@@ -23,12 +23,10 @@ const getList = (author, keyword) => {
  * @param id 博客id
  */
 const getDetail = (id) => {
-  return {
-    id: 1,
-    title: 'nodejs 教程',
-    content: '好好学习天天向上',
-    author: '小杨'
-  }
+  const sql = `select * from blogs where id = '${id}';`;
+  return exec(sql).then((rows) => {
+    return rows[0];
+  });
 };
 
 /**
@@ -38,9 +36,15 @@ const getDetail = (id) => {
 const newBlog = (blogData = {}) => {
   // blogData 博客对象
   console.log('newBlog', blogData);
-  return {
-    id: 3,
-  };
+  const { title, content, author } = blogData;
+  const createtime = Date.now();
+  const sql = `insert into blogs (title, content, createtime, author) values ('${title}', '${content}', createtime, '${author}');`;
+  return exec(sql).then((insertData) => {
+    const { insertId } = insertData;
+    return {
+      id: insertId,
+    }
+  });
 };
 
 /**
