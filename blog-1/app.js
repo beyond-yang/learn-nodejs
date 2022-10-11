@@ -38,6 +38,21 @@ const handleServer = (req, res) => {
   req.query = querystring.parse(url.split('?')[1]);
   res.setHeader('Content-type', 'application/json')
 
+  /**
+   * 获取并解析 cookie
+   */
+  req.cookie = {};
+  const cookies = req.headers.cookie || ''; // k1=v1;k2=v2;
+  cookies.split(';').forEach(cookie => {
+      if (!cookie) {
+        return;
+      }
+      const key = cookie.split('=')[0];
+      const val = cookie.split('=')[1];
+      req.cookie[key] = val;
+  });
+  console.log('cookie', req.cookie);
+
   getPostData(req, res).then((postData) => {
     req.body = postData;
     // const userData = handleUserRouter(req, res);
@@ -54,13 +69,15 @@ const handleServer = (req, res) => {
     }
     // const blogData = handleBlogRouter(req, res);
     const blogResult = handleBlogRouter(req, res);
-    blogResult.then((blogData) => {
-      if (blogData) {
-        res.end(
-          JSON.stringify(blogData)
-        );
-      }
-    });
+    if (blogResult) {
+      blogResult.then((blogData) => {
+        if (blogData) {
+          res.end(
+            JSON.stringify(blogData)
+          );
+        }
+      });
+    }
   });
 }
 
