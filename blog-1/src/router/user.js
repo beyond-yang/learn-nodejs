@@ -6,9 +6,9 @@ const handleUserRouter = (req, res) => {
   const { method, url, path } = req;
   // 路由
   // const path = url.split('?')[0];
-  if (method === 'GET' && path === '/api/user/login') {
-    // const { username, password } = req.body;
-    const { username, password } = req.query;
+  if (method === 'POST' && path === '/api/user/login') {
+    const { username, password } = req.body;
+    // const { username, password } = req.query;
 
     const result = login(username, password);
     return result.then((resultData) => {

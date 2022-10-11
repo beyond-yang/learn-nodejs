@@ -7,7 +7,14 @@ const {
   delBolg,
 } = require('../controller/blog');
 
+const loginCheck = (req) => {
+  if (!req?.session?.username) {
+    return Promise.resolve(new ErrorModel('未登录'));
+  }
+};
+
 const handleBlogRouter = (req, res) => {
+  console.log('哈哈哈', res.session);
   const { method, url } = req;
   const { id } = req.query;
   // 路由
@@ -30,8 +37,13 @@ const handleBlogRouter = (req, res) => {
   }
   // 新建博客
   if(method === 'POST' && req.path === '/api/blog/new') {
-    const author = 'yangjing';
-    req.body.author = author;
+    req.body.author = req.session.username;
+    const loginCheckResult =  loginCheck(req);
+
+    if (loginCheckResult) {
+      // 未登录
+      return loginCheck();
+    }
     const result = newBlog(req.body);
     return result.then((resultObj) => {
       return new SuccessModel(resultObj);
@@ -39,6 +51,10 @@ const handleBlogRouter = (req, res) => {
   }
   // 更新博客
   if (method === 'POST' && req.path === '/api/blog/update') {
+    const loginCheckResult = loginCheck(req);
+    if (loginCheckResult) {
+      return loginCheck();
+    }
     const result = updateBlog(id, req.body);
     return result.then((resultData) => {
       if (resultData) {
@@ -50,7 +66,11 @@ const handleBlogRouter = (req, res) => {
   }
   // 删除博客
   if(method === 'POST' && req.path === '/api/blog/del') {
-    const author = 'yangjing';
+    const author = req.session.username;
+    const loginCheckResult = loginCheck(req);
+    if (loginCheckResult) {
+      return loginCheck();
+    }
     const result = delBolg(id, author);
     return result.then((resultData) => {
       if (resultData) {

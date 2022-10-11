@@ -77,6 +77,7 @@ const handleServer = (req, res) => {
    */
   let needSetCookie = false;
   let userid = req.cookie.userid;
+  console.log('三生三世', userid);
   if (!userid) {
     needSetCookie = true;
     userid = `${Date.now()}_${Math.random()}`;
@@ -95,6 +96,7 @@ const handleServer = (req, res) => {
   })
   .then((postData) => {
     req.body = postData;
+    console.log('噢噢噢噢', req.session);
     // const userData = handleUserRouter(req, res);
     const userResult = handleUserRouter(req, res);
     if (userResult) {
@@ -111,6 +113,7 @@ const handleServer = (req, res) => {
     }
     // const blogData = handleBlogRouter(req, res);
     const blogResult = handleBlogRouter(req, res);
+    console.log('userid444', req.sessionid);
     if (blogResult) {
       blogResult.then((blogData) => {
         if (needSetCookie) {
