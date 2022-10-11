@@ -40,7 +40,18 @@ const handleServer = (req, res) => {
 
   getPostData(req, res).then((postData) => {
     req.body = postData;
-    const userData = handleUserRouter(req, res);
+    // const userData = handleUserRouter(req, res);
+    const userResult = handleUserRouter(req, res);
+    if (userResult) {
+      userResult.then((userData) => {
+        if (userData) {
+          res.end(
+            JSON.stringify(userData)
+          )
+        }
+      });
+      return;
+    }
     // const blogData = handleBlogRouter(req, res);
     const blogResult = handleBlogRouter(req, res);
     blogResult.then((blogData) => {
@@ -50,11 +61,6 @@ const handleServer = (req, res) => {
         );
       }
     });
-    if (userData) {
-      res.end(
-        JSON.stringify(userData)
-      )
-    }
   });
 }
 
