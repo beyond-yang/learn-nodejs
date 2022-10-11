@@ -47,8 +47,8 @@ const handleServer = (req, res) => {
       if (!cookie) {
         return;
       }
-      const key = cookie.split('=')[0];
-      const val = cookie.split('=')[1];
+      const key = cookie.split('=')[0].trim();
+      const val = cookie.split('=')[1].trim();
       req.cookie[key] = val;
   });
   console.log('cookie', req.cookie);
