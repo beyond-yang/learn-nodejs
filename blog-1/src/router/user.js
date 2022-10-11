@@ -1,6 +1,5 @@
 const { login } = require('../controller/user');
 const { SuccessModel, ErrorModel } = require('../model/resModel');
-const { getCookieExprise } = require('../utils/common');
 
 const handleUserRouter = (req, res) => {
   const { method, url, path } = req;
@@ -12,10 +11,10 @@ const handleUserRouter = (req, res) => {
 
     const result = login(username, password);
     return result.then((resultData) => {
-      const {username} = resultData;
+      const {username, realname} = resultData;
       if (username) {
-        // 服务端修改 cookie
-        res.setHeader('Set-Cookie', `username=${username};path=/;httpOnly;expires=${getCookieExprise()}`);
+        req.session.username = username;
+        req.session.realname = realname;
         return new SuccessModel('登录成功');
       }
       return new ErrorModel('登录失败');
@@ -23,10 +22,10 @@ const handleUserRouter = (req, res) => {
   }
 
   if (method === 'GET' && path === '/api/user/login-test') {
-    const { username } = req.cookie;
+    const { username } = req.session;
     if (username) {
       return Promise.resolve(new SuccessModel({
-        username
+        session: req.session
       }), '已登录');
     }
     return Promise.resolve(new ErrorModel('未登录'));

@@ -1,7 +1,9 @@
 const querystring = require('querystring');
 const handleUserRouter = require('./src/router/user');
 const handleBlogRouter = require('./src/router/blog');
-const { join } = require('path');
+const { getCookieExprise } = require('./src/utils/common');
+// 存储 session 数据
+const SESSION_DATA = {};
 
 /**
  * 获取 post data 数据
@@ -51,7 +53,23 @@ const handleServer = (req, res) => {
       const val = cookie.split('=')[1].trim();
       req.cookie[key] = val;
   });
-  console.log('cookie', req.cookie);
+
+  /**
+   * 初始化session
+   */
+  let userid = req.cookie.userid;
+  let needSetCookie = false;
+  if (userid) {
+    if (!SESSION_DATA[userid]) {
+      SESSION_DATA[userid] = {};
+    }
+  } else {
+    needSetCookie = true;
+    userid = `${Date.now()}_${Math.random()}`;
+    SESSION_DATA[userid] = {};
+  }
+
+  req.session = SESSION_DATA[userid];
 
   getPostData(req, res).then((postData) => {
     req.body = postData;
@@ -59,11 +77,13 @@ const handleServer = (req, res) => {
     const userResult = handleUserRouter(req, res);
     if (userResult) {
       userResult.then((userData) => {
-        if (userData) {
-          res.end(
-            JSON.stringify(userData)
-          )
+        if (needSetCookie) {
+          // 服务端修改 cookie
+          res.setHeader('Set-Cookie', `userid=${userid};path=/;httpOnly;expires=${getCookieExprise()}`);
         }
+        res.end(
+          JSON.stringify(userData)
+        )
       });
       return;
     }
@@ -71,11 +91,13 @@ const handleServer = (req, res) => {
     const blogResult = handleBlogRouter(req, res);
     if (blogResult) {
       blogResult.then((blogData) => {
-        if (blogData) {
-          res.end(
-            JSON.stringify(blogData)
-          );
+        if (needSetCookie) {
+          // 服务端修改 cookie
+          res.setHeader('Set-Cookie', `userid=${userid};path=/;httpOnly;expires=${getCookieExprise()}`);
         }
+        res.end(
+          JSON.stringify(blogData)
+        );
       });
     }
   });
