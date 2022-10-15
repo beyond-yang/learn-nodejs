@@ -14,15 +14,23 @@ const loginCheck = (req) => {
 };
 
 const handleBlogRouter = (req, res) => {
-  console.log('哈哈哈', res.session);
+  // console.log('哈哈哈', res.session);
   const { method, url } = req;
   const { id } = req.query;
   // 路由
   // const path = url.split('?')[0];
   // 获取博客列表
   if(method === 'GET' && req.path === '/api/blog/list') {
-    const { author, keyword } = req.query;
+    let { author, keyword } = req.query;
     // return new SuccessModel(getList(author, keyword), '获取博客列表成功');
+    if (req.query.isadmin) {
+      const loginCheckResult = loginCheck(req);
+      if (loginCheckResult) {
+        return loginCheckResult;
+      }
+      // 强制查询自己的博客
+      author = req.session.username;
+    }
     const result = getList(author, keyword);
     return result.then((listData) => {
       return new SuccessModel(listData, '博客列表获取成功');
@@ -42,7 +50,7 @@ const handleBlogRouter = (req, res) => {
 
     if (loginCheckResult) {
       // 未登录
-      return loginCheck();
+      return loginCheckResult;
     }
     const result = newBlog(req.body);
     return result.then((resultObj) => {
@@ -53,7 +61,7 @@ const handleBlogRouter = (req, res) => {
   if (method === 'POST' && req.path === '/api/blog/update') {
     const loginCheckResult = loginCheck(req);
     if (loginCheckResult) {
-      return loginCheck();
+      return loginCheckResult;
     }
     const result = updateBlog(id, req.body);
     return result.then((resultData) => {
@@ -69,7 +77,7 @@ const handleBlogRouter = (req, res) => {
     const author = req.session.username;
     const loginCheckResult = loginCheck(req);
     if (loginCheckResult) {
-      return loginCheck();
+      return loginCheckResult;
     }
     const result = delBolg(id, author);
     return result.then((resultData) => {
